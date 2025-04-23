@@ -1,4 +1,4 @@
-FROM alpine:3 as downloader
+FROM alpine:3 AS downloader
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -17,4 +17,5 @@ RUN apk add --no-cache ca-certificates tzdata
 EXPOSE 8090
 
 COPY --from=downloader /pocketbase /usr/local/bin/pocketbase
-ENTRYPOINT ["/usr/local/bin/pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb_data", "--publicDir=/pb_public", "--hooksDir=/pb_hooks"]
+ENTRYPOINT ["/usr/local/bin/pocketbase", "--dir=/pb_data", "--publicDir=/pb_public", "--hooksDir=/pb_hooks", "--migrationsDir=/pb_migrations"]
+CMD ["serve", "--http=0.0.0.0:8090"]

@@ -55,9 +55,11 @@ services:
     image: ghcr.io/dishuostec/pocketbase:latest
     container_name: pocketbase
     restart: unless-stopped
-    command:
-      - --encryptionEnv # optional
-      - ENCRYPTION # optional
+    #command:
+    #  - serve
+    #  - --http=0.0.0.0:8090
+    #  - --encryptionEnv # optional
+    #  - ENCRYPTION # optional
     environment:
       TZ: "America/New_York" # optional (Set your timezone)
       ENCRYPTION: $(openssl rand -hex 16) # optional (Ensure this is a 32-character long encryption key https://pocketbase.io/docs/going-to-production/#enable-settings-encryption) 
@@ -67,6 +69,7 @@ services:
       - /path/to/data:/pb_data
       - /path/to/public:/pb_public # optional
       - /path/to/hooks:/pb_hooks # optional
+      - /path/to/migrations:/pb_migrations # optional
     healthcheck: # optional, recommended since v0.10.0
       test: wget --no-verbose --tries=1 --spider http://localhost:8090/api/health || exit 1
       interval: 5s
@@ -85,8 +88,10 @@ docker run -d \
   -v /path/to/data:/pb_data \
   -v /path/to/public:/pb_public `# optional` \
   -v /path/to/hooks:/pb_hooks `# optional` \
+  -v /path/to/migrations:/pb_migrations `# optional` \
   --restart unless-stopped \
   ghcr.io/dishuostec/pocketbase:latest \
+  serve --http=0.0.0.0:8090 `# optional`
   --encryptionEnv ENCRYPTION `# optional`
 ```
 
@@ -105,6 +110,8 @@ services:
     container_name: pocketbase
     restart: unless-stopped
     command:
+      - serve
+      - --http=0.0.0.0:8090
       - --encryptionEnv # optional
       - ENCRYPTION # optional
     environment:
@@ -116,6 +123,7 @@ services:
       - /path/to/data:/pb_data
       - /path/to/public:/pb_public # optional
       - /path/to/hooks:/pb_hooks # optional
+      - /path/to/migrations:/pb_migrations # optional
     healthcheck: # optional, recommended since v0.10.0
       test: wget --no-verbose --tries=1 --spider http://localhost:8090/api/health || exit 1
       interval: 5s
