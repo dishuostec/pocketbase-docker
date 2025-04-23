@@ -49,8 +49,7 @@ jobs:
           result-encoding: string
           script: |
             const {PACKAGE_NAME,PACKAGE_TYPE} = process.env;
-            const {data: packages} = await github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg({
-              org: context.repo.owner,
+            const {data: packages} = await github.rest.packages.getAllPackageVersionsForAPackageOwnedByTheAuthenticatedUser({
               package_type: PACKAGE_TYPE,
               package_name: PACKAGE_NAME,
             })
@@ -59,8 +58,11 @@ jobs:
               p.metadata.container.tags.includes("latest")
             )[0];
 
-            return latest.metadata.container.tags.find((v) => /^v?\d+\.\d+\.\d+$/.test(v)) || '0.0.0'
+            if (!latest) {
+              return ''
+            }
 
+            return latest.metadata.container.tags.find((v) => /^v?\d+\.\d+\.\d+$/.test(v)) || ''
 
       - name: Log package version
         run: echo "Latest package version is ${{ steps.package.outputs.result }}"
@@ -68,7 +70,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs: check
-    if: (needs.check.outputs.pocketbase != needs.check.outputs.package) || github.event_name == 'workflow_dispatch'
+    if: (needs.check.outputs.package != '' && needs.check.outputs.pocketbase != needs.check.outputs.package) || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
