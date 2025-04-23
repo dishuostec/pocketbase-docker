@@ -19,7 +19,7 @@
 
 ## Supported Architectures
 
-Pulling `ghcr.io/muchobien/pocketbase:latest` will automatically retrieve the appropriate image for your system architecture.
+Pulling `ghcr.io/dishuostec/pocketbase:latest` will automatically retrieve the appropriate image for your system architecture.
 
 | Architecture | Supported |
 |--------------|-----------|
@@ -52,13 +52,14 @@ Below are example configurations to get started with a PocketBase container.
 version: "3.7"
 services:
   pocketbase:
-    image: ghcr.io/muchobien/pocketbase:latest
+    image: ghcr.io/dishuostec/pocketbase:latest
     container_name: pocketbase
     restart: unless-stopped
     command:
       - --encryptionEnv # optional
       - ENCRYPTION # optional
     environment:
+      TZ: "America/New_York" # optional (Set your timezone)
       ENCRYPTION: $(openssl rand -hex 16) # optional (Ensure this is a 32-character long encryption key https://pocketbase.io/docs/going-to-production/#enable-settings-encryption) 
     ports:
       - "8090:8090"
@@ -79,12 +80,13 @@ services:
 docker run -d \
   --name=pocketbase \
   -p 8090:8090 \
+  -e TZ="America/New_York" `# optional` \
   -e ENCRYPTION=example `# optional` \
   -v /path/to/data:/pb_data \
   -v /path/to/public:/pb_public `# optional` \
   -v /path/to/hooks:/pb_hooks `# optional` \
   --restart unless-stopped \
-  ghcr.io/muchobien/pocketbase:latest \
+  ghcr.io/dishuostec/pocketbase:latest \
   --encryptionEnv ENCRYPTION `# optional`
 ```
 
@@ -106,6 +108,7 @@ services:
       - --encryptionEnv # optional
       - ENCRYPTION # optional
     environment:
+      TZ: "America/New_York" # optional
       ENCRYPTION: example # optional
     ports:
       - "8090:8090"
