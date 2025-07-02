@@ -11,8 +11,7 @@ RUN wget https://github.com/pocketbase/pocketbase/releases/download/v${VERSION}/
     && unzip pocketbase_${VERSION}_${BUILDX_ARCH}.zip \
     && chmod +x /pocketbase
 
-FROM alpine:3
-RUN apk add --no-cache ca-certificates tzdata
+FROM gcr.io/distroless/static-debian12
 
 EXPOSE 8090
 
